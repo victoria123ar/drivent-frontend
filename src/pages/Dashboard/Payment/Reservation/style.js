@@ -16,29 +16,24 @@ const Text = styled.span`
   color: #8e8e8e;
 `;
 
-const Button = styled.button`
-  width: 145px;
-  height: 145px;
-  background-color: #ffffff;
-  border-radius: 20px;
-  border: 1px solid #cecece;
-  margin-top: 20px;
-  :last-child {
-    margin-left: 20px;
-  }
+const Button = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 162px;
+  height: 37px;
+  background: #e0e0e0;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
   cursor: pointer;
+  margin-top: 20px;
   h5 {
     font-family: 'Roboto';
-    font-size: 16px;
-    text-align: center;
-    color: #454545;
-  }
-  p {
-    font-family: 'Roboto';
-    font-size: 14px;
-    line-height: 20px;
-    text-align: center;
-    color: #898989;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #000000;
   }
 `;
 
