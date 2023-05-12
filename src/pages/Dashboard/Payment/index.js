@@ -5,10 +5,16 @@ import { getPersonalInformations } from '../../../services/enrollmentApi';
 import useToken from '../../../hooks/useToken';
 import { StyledTypography } from '../../../components/PersonalInformationForm';
 import { TicketType } from './TicketType/index';
+import { TicketHotelType } from './TicketHotelType/index';
+import { getTicketsType } from '../../../services/ticketApi';
+import { Reservation } from './Reservation';
 
 export default function Payment() {
   const token = useToken();
   const [infos, setInfos] = useState();
+  const [selectRemoteStatus, setSelectRemoteStatus] = useState(true);
+  const [selectHotelStatus, setSelectHotelStatus] = useState(true);
+  const [ticketsType, setTicketsType] = useState();
 
   useEffect(() => {
     const promise = getPersonalInformations(token);
@@ -21,6 +27,17 @@ export default function Payment() {
       });
   });
 
+  useEffect(() => {
+    const promise = getTicketsType(token);
+    promise
+      .then((res) => {
+        setTicketsType(res);
+      })
+      .catch((error) => {
+        if (error.status === 404) setInfos(false);
+      });
+  }, []);
+
   return (
     <>
       <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
@@ -29,7 +46,11 @@ export default function Payment() {
           <Text>Você precisa completar a sua inscrição antes de prosseguir pra escolha de ingresso</Text>
         </Container>
       ) : (
-        <TicketType />
+        <>
+          <TicketType setSelectRemoteStatus={setSelectRemoteStatus} />
+          {!selectRemoteStatus ? <></> : <TicketHotelType setSelectHotelStatus={setSelectHotelStatus} />}
+          {!selectHotelStatus ? <></> : <Reservation />}
+        </>
       )}
     </>
   );
