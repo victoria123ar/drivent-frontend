@@ -3,7 +3,6 @@ import styled from 'styled-components';
 const Container = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
 `;
 
 const Text = styled.span`
@@ -19,9 +18,9 @@ const Text = styled.span`
 const Button = styled.button`
   width: 145px;
   height: 145px;
-  background-color: #ffffff;
+  background-color: ${({ active }) => (active ? '#FFEED2' : '#ffff')};
   border-radius: 20px;
-  border: 1px solid #cecece;
+  border: ${({ active }) => (active ? 'none' : '1px solid #cecece')};
   margin-top: 20px;
   :last-child {
     margin-left: 20px;
