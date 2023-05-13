@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { AiFillCheckCircle } from 'react-icons/ai';
 
-export const PaymentContent = styled.div`
+const PaymentContent = styled.div`
   h1 {
     font-size: 34px;
     margin-bottom: 40px;
@@ -46,7 +46,7 @@ export const PaymentContent = styled.div`
     }
   }
 `;
-export const TicketContent = styled.div`
+const TicketContent = styled.div`
   width: 290px;
   height: 108px;
   background-color: #ffeed2;
@@ -63,14 +63,15 @@ export const TicketContent = styled.div`
     color: #8e8e8e;
   }
 `;
-export const PaymentConfirme = styled.div`
+const PaymentConfirme = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
 `;
-
-export const ConfirmeIcon = styled(AiFillCheckCircle)`
+const ConfirmeIcon = styled(AiFillCheckCircle)`
   color: #36b853;
   font-size: 40px;
   margin-right: 10px;
 `;
+
+export { PaymentConfirme, PaymentContent, ConfirmeIcon, TicketContent };

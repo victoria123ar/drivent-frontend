@@ -1,14 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PaymentContent, TicketContent, PaymentConfirme, ConfirmeIcon } from './style';
 import PaymentForm from './PaymentForm';
 
 export default function TicketPayment() {
-  const ticket = {
-    id: 1,
-    ticketTypeId: 1,
-    enrollmentId: 1,
-    status: 'RESERVE',
-  };
+  const [ticketStatus, setTicketStatus] = useState('RESERVE');
 
   function Paid() {
     return (
@@ -28,7 +23,7 @@ export default function TicketPayment() {
     return (
       <>
         <PaymentForm />
-        <button>
+        <button onClick={finalizePayment}>
           <p>FINALIZAR PAGAMENTO</p>
         </button>
       </>
@@ -36,9 +31,14 @@ export default function TicketPayment() {
   }
 
   function PaymentRender() {
-    if (ticket.status === 'PAID') return Paid();
+    if (ticketStatus === 'PAID') return Paid();
     return Reserve();
   }
+
+  function finalizePayment(e) {
+    setTicketStatus('PAID');
+  }
+
   return (
     <>
       <PaymentContent>
