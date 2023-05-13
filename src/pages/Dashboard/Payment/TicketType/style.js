@@ -3,6 +3,7 @@ import styled from 'styled-components';
 const Container = styled.div`
   display: flex;
   align-items: center;
+  margin-bottom: 20px;
 `;
 
 const Text = styled.span`

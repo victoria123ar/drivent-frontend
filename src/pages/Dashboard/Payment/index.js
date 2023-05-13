@@ -21,6 +21,7 @@ export default function Payment() {
   const [selectRemoteStatus, setSelectRemoteStatus] = useState(true);
   const [selectHotelStatus, setSelectHotelStatus] = useState(true);
   const [ticketsType, setTicketsType] = useState();
+  const [hotelTicketType, setHotelTicketType] = useState({ selected: false, includesHotel: null });
 
   useEffect(() => {
     getPersonalInformations(token)
@@ -50,6 +51,8 @@ export default function Payment() {
       });
   }, []);
 
+  if (!ticketsType) return <>Carregando...</>;
+
   return (
     <>
       <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
@@ -69,7 +72,16 @@ export default function Payment() {
             setForm={setForm}
             event={event}
           />
-          {!selectRemoteStatus ? <></> : <TicketHotelType setSelectHotelStatus={setSelectHotelStatus} />}
+          {!selectRemoteStatus ? (
+            <></>
+          ) : (
+            <TicketHotelType
+              ticketsType={ticketsType}
+              hotelTicketType={hotelTicketType}
+              setHotelTicketType={setHotelTicketType}
+              setSelectHotelStatus={setSelectHotelStatus}
+            />
+          )}
           {!selectHotelStatus ? <></> : <Reservation />}
         </>
       )}
