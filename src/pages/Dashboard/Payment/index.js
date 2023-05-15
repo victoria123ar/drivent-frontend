@@ -82,6 +82,7 @@ export default function Payment() {
                 setForm={setForm}
                 ticketsType={ticketsType}
                 setTicketSelected={setTicketSelected}
+                setHotelTicketType={setHotelTicketType}
               />
               {!inPerson ? (
                 <></>

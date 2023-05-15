@@ -10,13 +10,14 @@ export function TicketType({
   setForm,
   ticketsType,
   setTicketSelected,
-  
+  setHotelTicketType,
 }) {
   function inPersonChange() {
     setSelected({ inPerson: true, online: false });
     setActive({ inPersonActive: true, onlineActive: false });
     setInPerson(true);
     setForm({ ...form, online: false });
+    setHotelTicketType({ selected: false, includesHotel: null });
   }
 
   function onlineChange() {
@@ -26,6 +27,7 @@ export function TicketType({
     setForm({ ...form, online: true });
     const [ticket] = ticketsType.filter((e) => e.isRemote);
     setTicketSelected(ticket);
+    setHotelTicketType({ selected: false, includesHotel: null });
   }
 
   const [ticketsOnline] = ticketsType.filter((e) => e.isRemote);
