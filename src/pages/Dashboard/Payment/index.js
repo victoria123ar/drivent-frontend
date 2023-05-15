@@ -7,7 +7,7 @@ import { StyledTypography } from '../../../components/PersonalInformationForm';
 import { TicketType } from './TicketType/index';
 import { getEventInfo } from '../../../services/eventApi';
 import { TicketHotelType } from './TicketHotelType/index';
-import { getTicketsType } from '../../../services/ticketApi';
+import { getTicketsType, createTicket, getTickets } from '../../../services/ticketApi';
 import { Reservation } from './TicketReservation';
 import PaymentForm from './TicketPayment/PaymentForm';
 
@@ -21,8 +21,9 @@ export default function Payment() {
   const [selected, setSelected] = useState({ inPerson: false, online: false });
   const [ticketsType, setTicketsType] = useState();
   const [hotelTicketType, setHotelTicketType] = useState({ selected: false, includesHotel: null });
-  const [ticket, setTicket] = useState({});
+  const [ticketSelected, setTicketSelected] = useState({});
   const [reserved, setReserved] = useState(false);
+  const [userTickets, setUserTickets] = useState();
 
   useEffect(() => {
     getPersonalInformations(token)
@@ -39,24 +40,39 @@ export default function Payment() {
         setEvent(responseEvent);
       })
       .catch((error) => {});
-  }, []);
-
-  useEffect(() => {
-    const promise = getTicketsType(token);
-    promise
+    getTicketsType(token)
       .then((res) => {
         setTicketsType(res);
       })
       .catch((error) => {
         if (error.status === 404) setInfos(false);
       });
+    getTickets(token)
+      .then((res) => {
+        setUserTickets(res);
+      })
+      .catch((error) => {
+        if (error.status === 404) setUserTickets();
+      });
   }, []);
+
+  async function reservation() {
+    const bodyRequest = { ticketTypeId: ticketSelected.id };
+    try {
+      await createTicket(bodyRequest, token);
+      setReserved(true);
+    } catch (error) {
+      alert('Erro ao reservar ticket');
+      setTicketSelected({});
+      setHotelTicketType({ selected: false, includesHotel: null });
+    }
+  }
 
   if (!ticketsType) return <>Carregando...</>;
 
   return (
     <>
-      {reserved ? (
+      {reserved || userTickets ? (
         <PaymentForm />
       ) : (
         <>
@@ -77,7 +93,8 @@ export default function Payment() {
                 setForm={setForm}
                 event={event}
                 ticketsType={ticketsType}
-                setTicket={setTicket}
+                setTicketSelected={setTicketSelected}
+                setHotelTicketType={setHotelTicketType}
               />
               {!inPerson ? (
                 <></>
@@ -86,11 +103,11 @@ export default function Payment() {
                   ticketsType={ticketsType}
                   hotelTicketType={hotelTicketType}
                   setHotelTicketType={setHotelTicketType}
-                  setTicket={setTicket}
+                  setTicketSelected={setTicketSelected}
                 />
               )}
               {selected.online || hotelTicketType.selected ? (
-                <Reservation setReserved={setReserved} ticket={ticket} />
+                <Reservation reservation={reservation} ticketSelected={ticketSelected} />
               ) : (
                 <></>
               )}
