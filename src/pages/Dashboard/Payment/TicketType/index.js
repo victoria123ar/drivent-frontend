@@ -9,16 +9,13 @@ export function TicketType({
   form,
   setForm,
   ticketsType,
-  setTicket,
   setTicketSelected,
   setHotelTicketType,
-  
 }) {
   function inPersonChange() {
     setSelected({ inPerson: true, online: false });
     setActive({ inPersonActive: true, onlineActive: false });
     setInPerson(true);
-    const [ticket] = ticketsType.filter((e) => e.isRemote);
     setForm({ ...form, online: false });
     setHotelTicketType({ selected: false, includesHotel: null });
   }
@@ -34,7 +31,7 @@ export function TicketType({
   }
 
   const [ticketsOnline] = ticketsType.filter((e) => e.isRemote);
-  const [ticketsInPerson] = ticketsType.filter((e) => !e.isRemote);
+  const [ticketsInPerson] = ticketsType.filter((e) => !e.isRemote && !e.includesHotel);
   const priceOnline = ticketsOnline.price / 100;
   const priceInPerson = ticketsInPerson.price / 100;
 
@@ -44,11 +41,11 @@ export function TicketType({
       <Container>
         <Button active={active.inPersonActive} selected={selected} onClick={inPersonChange}>
           <h5>Presencial</h5>
-          <p>+ {priceInPerson.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+          <p>{priceInPerson.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
         </Button>
         <Button active={active.onlineActive} selected={selected} onClick={onlineChange}>
           <h5>Online</h5>
-          <p>+ {priceOnline.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+          <p>{priceOnline.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
         </Button>
       </Container>
     </>

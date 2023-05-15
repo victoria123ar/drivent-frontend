@@ -8,7 +8,7 @@ import { TicketType } from './TicketType/index';
 import { TicketHotelType } from './TicketHotelType/index';
 import { getTicketsType, createTicket, getTickets } from '../../../services/ticketApi';
 import { Reservation } from './TicketReservation';
-import PaymentForm from './TicketPayment/PaymentForm';
+import PaymentForm from './TicketPayment';
 
 export default function Payment() {
   const token = useToken();
@@ -18,7 +18,7 @@ export default function Payment() {
   const [selected, setSelected] = useState({ inPerson: false, online: false });
   const [ticketsType, setTicketsType] = useState();
   const [hotelTicketType, setHotelTicketType] = useState({ selected: false, includesHotel: null });
-  const [ticket, setTicket] = useState({});
+  const [ticketSelected, setTicketSelected] = useState({});
   const [reserved, setReserved] = useState(false);
   const [userTickets, setUserTickets] = useState();
   const { enrollment } = useEnrollment();
@@ -57,26 +57,31 @@ export default function Payment() {
   return (
     <>
       {reserved || userTickets ? (
-        <PaymentForm />
+        <PaymentForm ticket={userTickets} />
       ) : (
         <>
           <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
           {!enrollment ? (
             <Container>
-              <Text>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</Text>
+              <Text>
+                Você precisa completar sua inscrição antes
+                <br />
+                de prosseguir pra escolha de ingresso
+              </Text>
             </Container>
           ) : (
             <>
               <TicketType
-                active={active}
-                setActive={setActive}
-                setInPerson={setInPerson}
-                selected={selected}
-                setSelected={setSelected}
-                form={form}
-                setForm={setForm}
-                ticketsType={ticketsType}
-                setTicket={setTicket}
+                    active={active}
+                    setActive={setActive}
+                    setInPerson={setInPerson}
+                    selected={selected}
+                    setSelected={setSelected}
+                    form={form}
+                    setForm={setForm}
+                    ticketsType={ticketsType}
+                    setTicketSelected={setTicketSelected}
+                setHotelTicketType={setHotelTicketType}
               />
               {!inPerson ? (
                 <></>
@@ -103,7 +108,6 @@ export default function Payment() {
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
 `;
 const Text = styled.span`
   font-family: 'Roboto';
@@ -112,5 +116,5 @@ const Text = styled.span`
   color: #8e8e8e;
   text-align: center;
   line-height: 23px;
-  margin-top: 40%;
+  margin-top: 25%;
 `;
