@@ -1,11 +1,24 @@
 import { Container, Text, Button } from './style';
 
-export function TicketType({ active, setActive, setInPerson, selected, setSelected, form, setForm, event }) {
+export function TicketType({
+  active,
+  setActive,
+  setInPerson,
+  selected,
+  setSelected,
+  form,
+  setForm,
+  event,
+  ticketsType,
+  setTicketSelected,
+  setHotelTicketType,
+}) {
   function inPersonChange() {
     setSelected({ inPerson: true, online: false });
     setActive({ inPersonActive: true, onlineActive: false });
     setInPerson(true);
     setForm({ ...form, online: false, totalPrice: event.inPersonPrice });
+    setHotelTicketType({ selected: false, includesHotel: null });
   }
 
   function onlineChange() {
@@ -13,6 +26,9 @@ export function TicketType({ active, setActive, setInPerson, selected, setSelect
     setActive({ inPersonActive: false, onlineActive: true });
     setInPerson(false);
     setForm({ ...form, online: true, totalPrice: event.onlinePrice });
+    const [ticket] = ticketsType.filter((e) => e.isRemote);
+    setTicketSelected(ticket);
+    setHotelTicketType({ selected: false, includesHotel: null });
   }
 
   return (

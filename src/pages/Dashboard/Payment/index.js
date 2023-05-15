@@ -6,8 +6,9 @@ import useToken from '../../../hooks/useToken';
 import { StyledTypography } from '../../../components/PersonalInformationForm';
 import { TicketType } from './TicketType/index';
 import { TicketHotelType } from './TicketHotelType/index';
-import { getTicketsType } from '../../../services/ticketApi';
-import { Reservation } from './Reservation';
+import { getTicketsType, createTicket, getTickets } from '../../../services/ticketApi';
+import { Reservation } from './TicketReservation';
+import PaymentForm from './TicketPayment/PaymentForm';
 
 export default function Payment() {
   const token = useToken();
@@ -17,37 +18,58 @@ export default function Payment() {
   const [selected, setSelected] = useState({ inPerson: false, online: false });
   const [ticketsType, setTicketsType] = useState();
   const [hotelTicketType, setHotelTicketType] = useState({ selected: false, includesHotel: null });
-  const [ticket, setTicket] = useState({});
+  const [ticketSelected, setTicketSelected] = useState({});
   const [reserved, setReserved] = useState(false);
+  const [userTickets, setUserTickets] = useState();
   const { enrollment } = useEnrollment();
 
   useEffect(() => {
     const promise = getTicketsType(token);
-    promise
+    promise getTicketsType(token)
       .then((res) => {
         setTicketsType(res);
       })
       .catch((error) => {
         console.log(error);
       });
+    getTickets(token)
+      .then((res) => {
+        setUserTickets(res);
+      })
+      .catch((error) => {
+        if (error.status === 404) setUserTickets();
+      });
   }, []);
+
+  async function reservation() {
+    const bodyRequest = { ticketTypeId: ticketSelected.id };
+    try {
+      const newTicket = await createTicket(bodyRequest, token);
+      setUserTickets(newTicket);
+      setReserved(true);
+    } catch (error) {
+      alert('Erro ao reservar ticket');
+      setTicketSelected({});
+      setHotelTicketType({ selected: false, includesHotel: null });
+    }
+  }
 
   if (!ticketsType) return <>Carregando...</>;
 
   return (
     <>
-      <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
-      {!enrollment ? (
-        <Container>
-          <Text>
-            Você precisa completar sua inscrição antes
-            <br />
-            de prosseguir pra escolha de ingresso
-          </Text>
-        </Container>
+      {reserved || userTickets ? (
+        <PaymentForm />
       ) : (
         <>
-          <TicketType
+          <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
+          {!enrollment ? (
+            <Container>
+              <Text>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</Text>
+            </Container>
+          ) : (
+            <>
+              <TicketType
             active={active}
             setActive={setActive}
             setInPerson={setInPerson}
@@ -57,21 +79,23 @@ export default function Payment() {
             setForm={setForm}
             ticketsType={ticketsType}
             setTicket={setTicket}
-          />
-          {!inPerson ? (
-            <></>
-          ) : (
-            <TicketHotelType
-              ticketsType={ticketsType}
-              hotelTicketType={hotelTicketType}
-              setHotelTicketType={setHotelTicketType}
-              setTicket={setTicket}
-            />
-          )}
-          {selected.online || hotelTicketType.selected ? (
-            <Reservation setReserved={setReserved} ticket={ticket} />
-          ) : (
-            <></>
+              />
+              {!inPerson ? (
+                <></>
+              ) : (
+                <TicketHotelType
+                  ticketsType={ticketsType}
+                  hotelTicketType={hotelTicketType}
+                  setHotelTicketType={setHotelTicketType}
+                  setTicketSelected={setTicketSelected}
+                />
+              )}
+              {selected.online || hotelTicketType.selected ? (
+                <Reservation reservation={reservation} ticketSelected={ticketSelected} />
+              ) : (
+                <></>
+              )}
+            </>
           )}
         </>
       )}
