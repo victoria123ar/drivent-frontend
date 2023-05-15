@@ -18,16 +18,27 @@ export default function Payment() {
   const [selected, setSelected] = useState({ inPerson: false, online: false });
   const [ticketsType, setTicketsType] = useState();
   const [hotelTicketType, setHotelTicketType] = useState({ selected: false, includesHotel: null });
-  const [ticket, setTicket] = useState({});
-  const [reserved, setReserved] = useState(false);
-  const { enrollment } = useEnrollment();
-
-  useEffect(() => {
-    const promise = getTicketsType(token);
-    promise
   const [ticketSelected, setTicketSelected] = useState({});
   const [reserved, setReserved] = useState(false);
   const [userTickets, setUserTickets] = useState();
+  const { enrollment } = useEnrollment();
+
+  useEffect(() => {
+    getTicketsType(token)
+      .then((res) => {
+        setTicketsType(res);
+      })
+      .catch((error) => {
+        if (error.status === 404) setTicketsType([]);
+      });
+    getTickets(token)
+      .then((res) => {
+        setUserTickets(res);
+      })
+      .catch((error) => {
+        if (error.status === 404) setUserTickets();
+      });
+  }, []);
 
   async function reservation() {
     const bodyRequest = { ticketTypeId: ticketSelected.id };
@@ -51,9 +62,13 @@ export default function Payment() {
       ) : (
         <>
           <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
-          {!infos ? (
+          {!enrollment ? (
             <Container>
-              <Text>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</Text>
+              <Text>
+                Você precisa completar sua inscrição antes
+                <br />
+                de prosseguir pra escolha de ingresso
+              </Text>
             </Container>
           ) : (
             <>
@@ -65,10 +80,8 @@ export default function Payment() {
                 setSelected={setSelected}
                 form={form}
                 setForm={setForm}
-                event={event}
                 ticketsType={ticketsType}
                 setTicketSelected={setTicketSelected}
-                setHotelTicketType={setHotelTicketType}
               />
               {!inPerson ? (
                 <></>
@@ -96,7 +109,6 @@ export default function Payment() {
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
 `;
 const Text = styled.span`
   font-family: 'Roboto';
@@ -105,5 +117,5 @@ const Text = styled.span`
   color: #8e8e8e;
   text-align: center;
   line-height: 23px;
-  margin-top: 40%;
+  margin-top: 25%;
 `;
