@@ -6,8 +6,9 @@ import useToken from '../../../hooks/useToken';
 import { StyledTypography } from '../../../components/PersonalInformationForm';
 import { TicketType } from './TicketType/index';
 import { TicketHotelType } from './TicketHotelType/index';
-import { getTicketsType } from '../../../services/ticketApi';
-import { Reservation } from './Reservation';
+import { getTicketsType, createTicket, getTickets } from '../../../services/ticketApi';
+import { Reservation } from './TicketReservation';
+import PaymentForm from './TicketPayment/PaymentForm';
 
 export default function Payment() {
   const token = useToken();
@@ -24,54 +25,67 @@ export default function Payment() {
   useEffect(() => {
     const promise = getTicketsType(token);
     promise
-      .then((res) => {
-        setTicketsType(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  const [ticketSelected, setTicketSelected] = useState({});
+  const [reserved, setReserved] = useState(false);
+  const [userTickets, setUserTickets] = useState();
+
+  async function reservation() {
+    const bodyRequest = { ticketTypeId: ticketSelected.id };
+    try {
+      const newTicket = await createTicket(bodyRequest, token);
+      setUserTickets(newTicket);
+      setReserved(true);
+    } catch (error) {
+      alert('Erro ao reservar ticket');
+      setTicketSelected({});
+      setHotelTicketType({ selected: false, includesHotel: null });
+    }
+  }
 
   if (!ticketsType) return <>Carregando...</>;
 
   return (
     <>
-      <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
-      {!enrollment ? (
-        <Container>
-          <Text>
-            Você precisa completar sua inscrição antes
-            <br />
-            de prosseguir pra escolha de ingresso
-          </Text>
-        </Container>
+      {reserved || userTickets ? (
+        <PaymentForm />
       ) : (
         <>
-          <TicketType
-            active={active}
-            setActive={setActive}
-            setInPerson={setInPerson}
-            selected={selected}
-            setSelected={setSelected}
-            form={form}
-            setForm={setForm}
-            ticketsType={ticketsType}
-            setTicket={setTicket}
-          />
-          {!inPerson ? (
-            <></>
+          <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
+          {!infos ? (
+            <Container>
+              <Text>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</Text>
+            </Container>
           ) : (
-            <TicketHotelType
-              ticketsType={ticketsType}
-              hotelTicketType={hotelTicketType}
-              setHotelTicketType={setHotelTicketType}
-              setTicket={setTicket}
-            />
-          )}
-          {selected.online || hotelTicketType.selected ? (
-            <Reservation setReserved={setReserved} ticket={ticket} />
-          ) : (
-            <></>
+            <>
+              <TicketType
+                active={active}
+                setActive={setActive}
+                setInPerson={setInPerson}
+                selected={selected}
+                setSelected={setSelected}
+                form={form}
+                setForm={setForm}
+                event={event}
+                ticketsType={ticketsType}
+                setTicketSelected={setTicketSelected}
+                setHotelTicketType={setHotelTicketType}
+              />
+              {!inPerson ? (
+                <></>
+              ) : (
+                <TicketHotelType
+                  ticketsType={ticketsType}
+                  hotelTicketType={hotelTicketType}
+                  setHotelTicketType={setHotelTicketType}
+                  setTicketSelected={setTicketSelected}
+                />
+              )}
+              {selected.online || hotelTicketType.selected ? (
+                <Reservation reservation={reservation} ticketSelected={ticketSelected} />
+              ) : (
+                <></>
+              )}
+            </>
           )}
         </>
       )}
