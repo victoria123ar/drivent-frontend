@@ -12,7 +12,7 @@ import SignIn from './pages/SignIn';
 import Dashboard from './pages/Dashboard';
 import FillSubscription from './pages/Dashboard/FillSubscription';
 import Payment from './pages/Dashboard/Payment';
-import Hotel from './pages/Dashboard/Hotel';
+import Hotels from './pages/Dashboard/Hotel';
 import Activities from './pages/Dashboard/Activities';
 import Certificate from './pages/Dashboard/Certificate';
 import TicketPayment from './pages/Dashboard/Payment/TicketPayment';
@@ -21,6 +21,7 @@ import { EventInfoProvider } from './contexts/EventInfoContext';
 import { UserProvider } from './contexts/UserContext';
 
 import useToken from './hooks/useToken';
+import { ListHotels } from './pages/Dashboard/Hotel/ListHotels';
 
 export default function App() {
   return (
@@ -44,7 +45,8 @@ export default function App() {
               >
                 <Route path="subscription" element={<FillSubscription />} />
                 <Route path="payment" element={<Payment />} />
-                <Route path="hotel" element={<Hotel />} />
+                <Route path="hotel" element={<Hotels />} />
+                <Route path="hotel/:idHotel" element={<ListHotels />} />
                 <Route path="activities" element={<Activities />} />
                 <Route path="certificate" element={<Certificate />} />
                 <Route path="ticketpayment" element={<TicketPayment />} />
