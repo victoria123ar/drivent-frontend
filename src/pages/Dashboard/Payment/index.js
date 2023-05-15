@@ -18,19 +18,18 @@ export default function Payment() {
   const [selected, setSelected] = useState({ inPerson: false, online: false });
   const [ticketsType, setTicketsType] = useState();
   const [hotelTicketType, setHotelTicketType] = useState({ selected: false, includesHotel: null });
-  const [ticketSelected, setTicketSelected] = useState({});
+  const [ticket, setTicket] = useState({});
   const [reserved, setReserved] = useState(false);
   const [userTickets, setUserTickets] = useState();
   const { enrollment } = useEnrollment();
 
   useEffect(() => {
-    const promise = getTicketsType(token);
-    promise getTicketsType(token)
+    getTicketsType(token)
       .then((res) => {
         setTicketsType(res);
       })
       .catch((error) => {
-        console.log(error);
+        if (error.status === 404) setTicketsType([]);
       });
     getTickets(token)
       .then((res) => {
@@ -40,6 +39,7 @@ export default function Payment() {
         if (error.status === 404) setUserTickets();
       });
   }, []);
+
 
   async function reservation() {
     const bodyRequest = { ticketTypeId: ticketSelected.id };
