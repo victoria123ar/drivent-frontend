@@ -1,8 +1,7 @@
-import styled from 'styled-components';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { Container, Text } from './style';
 import { getHotelsWithRooms } from '../../../../services/hotelApi';
+import { Container, Room, Capacity } from './style';
 
 export async function ListRooms(token, idHotel) {
   const [rooms, setRooms] = useState();
@@ -37,8 +36,4 @@ export async function ListRooms(token, idHotel) {
       </Container>
     </>
   );
-}
-
-const Room = styled.div``;
-
-const Capacity = styled.div``;
+};
