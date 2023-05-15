@@ -41,14 +41,13 @@ export default function Payment() {
   }, []);
 
   async function reservation() {
-    const bodyRequest = { ticketTypeId: ticketSelected.id };
+    const bodyRequest = { ticketTypeId: ticketsType.id };
     try {
       const newTicket = await createTicket(bodyRequest, token);
       setUserTickets(newTicket);
       setReserved(true);
     } catch (error) {
       alert('Erro ao reservar ticket');
-      setTicketSelected({});
       setHotelTicketType({ selected: false, includesHotel: null });
     }
   }
@@ -73,15 +72,15 @@ export default function Payment() {
           ) : (
             <>
               <TicketType
-                active={active}
-                setActive={setActive}
-                setInPerson={setInPerson}
-                selected={selected}
-                setSelected={setSelected}
-                form={form}
-                setForm={setForm}
-                ticketsType={ticketsType}
-                setTicketSelected={setTicketSelected}
+                    active={active}
+                    setActive={setActive}
+                    setInPerson={setInPerson}
+                    selected={selected}
+                    setSelected={setSelected}
+                    form={form}
+                    setForm={setForm}
+                    ticketsType={ticketsType}
+                    setTicketSelected={setTicketSelected}
                 setHotelTicketType={setHotelTicketType}
               />
               {!inPerson ? (
@@ -91,11 +90,10 @@ export default function Payment() {
                   ticketsType={ticketsType}
                   hotelTicketType={hotelTicketType}
                   setHotelTicketType={setHotelTicketType}
-                  setTicketSelected={setTicketSelected}
                 />
               )}
               {selected.online || hotelTicketType.selected ? (
-                <Reservation reservation={reservation} ticketSelected={ticketSelected} />
+                <Reservation reservation={reservation} />
               ) : (
                 <></>
               )}
