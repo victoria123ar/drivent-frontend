@@ -8,7 +8,7 @@ import { TicketType } from './TicketType/index';
 import { TicketHotelType } from './TicketHotelType/index';
 import { getTicketsType, createTicket, getTickets } from '../../../services/ticketApi';
 import { Reservation } from './TicketReservation';
-import PaymentForm from './TicketPayment/PaymentForm';
+import TicketPayment from './TicketPayment';
 
 export default function Payment() {
   const token = useToken();
@@ -18,7 +18,7 @@ export default function Payment() {
   const [selected, setSelected] = useState({ inPerson: false, online: false });
   const [ticketsType, setTicketsType] = useState();
   const [hotelTicketType, setHotelTicketType] = useState({ selected: false, includesHotel: null });
-  const [ticket, setTicket] = useState({});
+  const [ticketSelected, setTicketSelected] = useState({});
   const [reserved, setReserved] = useState(false);
   const [userTickets, setUserTickets] = useState();
   const { enrollment } = useEnrollment();
@@ -40,7 +40,6 @@ export default function Payment() {
       });
   }, []);
 
-
   async function reservation() {
     const bodyRequest = { ticketTypeId: ticketSelected.id };
     try {
@@ -59,7 +58,7 @@ export default function Payment() {
   return (
     <>
       {reserved || userTickets ? (
-        <PaymentForm />
+        <TicketPayment />
       ) : (
         <>
           <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
@@ -70,15 +69,16 @@ export default function Payment() {
           ) : (
             <>
               <TicketType
-            active={active}
-            setActive={setActive}
-            setInPerson={setInPerson}
-            selected={selected}
-            setSelected={setSelected}
-            form={form}
-            setForm={setForm}
-            ticketsType={ticketsType}
-            setTicket={setTicket}
+                active={active}
+                setActive={setActive}
+                setInPerson={setInPerson}
+                selected={selected}
+                setSelected={setSelected}
+                form={form}
+                setForm={setForm}
+                ticketsType={ticketsType}
+                setTicketSelected={setTicketSelected}
+                setHotelTicketType={setHotelTicketType}
               />
               {!inPerson ? (
                 <></>
