@@ -73,5 +73,51 @@ const ConfirmeIcon = styled(AiFillCheckCircle)`
   font-size: 40px;
   margin-right: 10px;
 `;
-
-export { PaymentConfirme, PaymentContent, ConfirmeIcon, TicketContent };
+const CardContent = styled.div`
+  display: flex;
+  form {
+    display: flex;
+    justify-content: space-between;
+    width: 350px;
+    flex-wrap: wrap;
+    margin-left: 30px;
+    h5 {
+      margin-bottom: 15px;
+      padding-left: 5px;
+      color: gray;
+    }
+    input {
+      width: 100%;
+      height: 48px;
+      background: #ffffff;
+      border: 2px solid #d5d5d5;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 20px;
+      padding-left: 20px;
+      ::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+      &:placeholder-shown {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 20px;
+        padding-left: 10px;
+        color: #dbdbdb;
+      }
+    }
+    .validThru {
+      width: 210px;
+      margin-top: 15px;
+    }
+    .cvc {
+      width: 120px;
+      margin-top: 15px;
+    }
+  }
+`;
+export { PaymentConfirme, PaymentContent, ConfirmeIcon, TicketContent, CardContent };

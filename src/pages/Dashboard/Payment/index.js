@@ -8,7 +8,7 @@ import { TicketType } from './TicketType/index';
 import { TicketHotelType } from './TicketHotelType/index';
 import { getTicketsType, createTicket, getTickets } from '../../../services/ticketApi';
 import { Reservation } from './TicketReservation';
-import TicketPayment from './TicketPayment';
+import PaymentForm from './TicketPayment';
 
 export default function Payment() {
   const token = useToken();
@@ -58,7 +58,7 @@ export default function Payment() {
   return (
     <>
       {reserved || userTickets ? (
-        <TicketPayment />
+        <PaymentForm ticket={userTickets} />
       ) : (
         <>
           <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
