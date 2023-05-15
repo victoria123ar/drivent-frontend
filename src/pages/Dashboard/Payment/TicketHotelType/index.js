@@ -1,12 +1,16 @@
 import { Container, Text, Button } from '../TicketType/style';
 
-export function TicketHotelType({ ticketsType, hotelTicketType, setHotelTicketType }) {
+export function TicketHotelType({ ticketsType, hotelTicketType, setHotelTicketType, setTicket }) {
   function withHotel() {
     setHotelTicketType({ selected: true, includesHotel: true });
+    const [ticket] = ticketsType.filter((e) => !e.isRemote && e.includesHotel);
+    setTicket(ticket);
   }
 
   function withoutHotel() {
     setHotelTicketType({ selected: true, includesHotel: false });
+    const [ticket] = ticketsType.filter((e) => !e.isRemote && !e.includesHotel);
+    setTicket(ticket);
   }
   const tickets = ticketsType.filter((e) => !e.isRemote);
   const [includesHotel] = tickets.filter((e) => e.includesHotel);

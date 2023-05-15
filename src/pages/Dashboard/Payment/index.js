@@ -8,7 +8,8 @@ import { TicketType } from './TicketType/index';
 import { getEventInfo } from '../../../services/eventApi';
 import { TicketHotelType } from './TicketHotelType/index';
 import { getTicketsType } from '../../../services/ticketApi';
-import { Reservation } from './Reservation';
+import { Reservation } from './TicketReservation';
+import PaymentForm from './TicketPayment/PaymentForm';
 
 export default function Payment() {
   const token = useToken();
@@ -18,10 +19,10 @@ export default function Payment() {
   const [event, setEvent] = useState();
   const [form, setForm] = useState({ eventId: '', enrollmentId: '', online: '', withHotel: '', totalPrice: '' });
   const [selected, setSelected] = useState({ inPerson: false, online: false });
-  const [selectRemoteStatus, setSelectRemoteStatus] = useState(true);
-  const [selectHotelStatus, setSelectHotelStatus] = useState(true);
   const [ticketsType, setTicketsType] = useState();
   const [hotelTicketType, setHotelTicketType] = useState({ selected: false, includesHotel: null });
+  const [ticket, setTicket] = useState({});
+  const [reserved, setReserved] = useState(false);
 
   useEffect(() => {
     getPersonalInformations(token)
@@ -55,34 +56,46 @@ export default function Payment() {
 
   return (
     <>
-      <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
-      {!infos ? (
-        <Container>
-          <Text>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</Text>
-        </Container>
+      {reserved ? (
+        <PaymentForm />
       ) : (
         <>
-          <TicketType
-            active={active}
-            setActive={setActive}
-            setInPerson={setInPerson}
-            selected={selected}
-            setSelected={setSelected}
-            form={form}
-            setForm={setForm}
-            event={event}
-          />
-          {!selectRemoteStatus ? (
-            <></>
+          <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
+          {!infos ? (
+            <Container>
+              <Text>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</Text>
+            </Container>
           ) : (
-            <TicketHotelType
-              ticketsType={ticketsType}
-              hotelTicketType={hotelTicketType}
-              setHotelTicketType={setHotelTicketType}
-              setSelectHotelStatus={setSelectHotelStatus}
-            />
+            <>
+              <TicketType
+                active={active}
+                setActive={setActive}
+                setInPerson={setInPerson}
+                selected={selected}
+                setSelected={setSelected}
+                form={form}
+                setForm={setForm}
+                event={event}
+                ticketsType={ticketsType}
+                setTicket={setTicket}
+              />
+              {!inPerson ? (
+                <></>
+              ) : (
+                <TicketHotelType
+                  ticketsType={ticketsType}
+                  hotelTicketType={hotelTicketType}
+                  setHotelTicketType={setHotelTicketType}
+                  setTicket={setTicket}
+                />
+              )}
+              {selected.online || hotelTicketType.selected ? (
+                <Reservation setReserved={setReserved} ticket={ticket} />
+              ) : (
+                <></>
+              )}
+            </>
           )}
-          {!selectHotelStatus ? <></> : <Reservation />}
         </>
       )}
     </>
