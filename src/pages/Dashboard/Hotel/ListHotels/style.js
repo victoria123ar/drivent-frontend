@@ -16,7 +16,7 @@ export const Text = styled.div`
   font-size: 20px;
   text-align: center;
 
-  color: #8E8E8E;
+  color: #8e8e8e;
 `;
 
 export const Hotel = styled.div`
@@ -28,33 +28,33 @@ export const Hotel = styled.div`
   align-items: center;
   justify-content: center;
 
-  background: #EBEBEB;
+  background: #ebebeb;
   border-radius: 10px;
 
-  img{
+  img {
     width: 168px;
     height: 109px;
     border-radius: 5px;
   }
-  h1{
+  h1 {
     font-family: 'Roboto';
     font-size: 20px;
     font-weight: 400px;
     color: #343434;
     margin: 2px;
   }
-  strong{
+  strong {
     font-family: 'Roboto';
     font-weight: 700;
     font-size: 12px;
-    color: #3C3C3C;
+    color: #3c3c3c;
     margin: 2px;
   }
-  p{
+  p {
     font-family: 'Roboto';
     font-weight: 400;
     font-size: 12px;
-    color: #3C3C3C;
+    color: #3c3c3c;
     margin: 2px;
   }
 `;
@@ -67,7 +67,7 @@ export const HotelSelect = styled.div`
   align-items: center;
   justify-content: center;
 
-  background: #FFEED2;
+  background: #ffeed2;
   border-radius: 10px;
 `;
 

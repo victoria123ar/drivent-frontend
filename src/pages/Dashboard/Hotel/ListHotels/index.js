@@ -1,29 +1,26 @@
-import styled from 'styled-components';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { ListRooms } from '../ListRooms';
 import { getHotels } from '../../../../services/hotelApi';
-import { Link, useParams } from 'react-router-dom';
-import { Container, Text, HotelSelect, Hotel } from './style';
+import { Container, Text, HotelSelect, Hotel, Information } from './style';
 
-export async function ListHotels(token) {
-  const { idHotel } = useParams();
+export function ListHotels({ token, idHotel }) {
   const [hotels, setHotels] = useState();
   const [typeRooms, setTypeRooms] = useState('Single, Double e Triple');
   const [onRooms, setOnRooms] = useState('100');
+  const [selectedHotel, setSelectedHotel] = useState();
 
   useEffect(() => {
-    const promise = getHotels(token);
-    promise
+    getHotels(token)
       .then((res) => {
-        setHotels(res.data);
+        setHotels(res);
       })
       .catch((error) => {
         if (error.status === 404) setHotels(false);
       });
   }, []);
 
-  if (idHotel) {
+  if (selectedHotel) {
     return (
       <>
         {!hotels ? (
@@ -36,9 +33,9 @@ export async function ListHotels(token) {
             <Container>
               {hotels.map((h) =>
                 h.id === idHotel ? (
-                  <Link to={`/hotel/${h.id}`} key={h.id}>
+                  <div key={h.id}>
                     <HotelSelect>
-                      <img src={h.image} />
+                      <img src={h.image} alt="Imagem Hotel" />
                       <Information>
                         <h1>{h.name}</h1>
                         <strong>Tipo de acomodação:</strong>
@@ -47,11 +44,11 @@ export async function ListHotels(token) {
                         <p>{onRooms}</p>
                       </Information>
                     </HotelSelect>
-                  </Link>
+                  </div>
                 ) : (
-                  <Link to={`/hotel/${h.id}`} key={h.id}>
+                  <div key={h.id}>
                     <Hotel>
-                      <img src={h.image} />
+                      <img src={h.image} alt="Imagem Hotel" />
                       <Information>
                         <h1>{h.name}</h1>
                         <strong>Tipo de acomodação:</strong>
@@ -60,11 +57,11 @@ export async function ListHotels(token) {
                         <p>{onRooms}</p>
                       </Information>
                     </Hotel>
-                  </Link>
+                  </div>
                 )
               )}
             </Container>
-            <ListRooms token={token} idHotel={idHotel} />
+            <ListRooms token={token} hotel={selectedHotel} />
           </>
         )}
       </>
@@ -82,20 +79,20 @@ export async function ListHotels(token) {
           <Text>Primeiro, escolha seu hotel</Text>
           <Container>
             {hotels.map((h) => (
-              <Link to={`/hotel/${h.id}`} key={h.id}>
+              <div onClick={() => setSelectedHotel(h)} key={h.id}>
                 <Hotel>
-                  <img src={h.image} />
+                  <img src={h.image} alt="Imagem Hotel" />
                   <h1>{h.name}</h1>
                   <strong>Tipo de acomodação:</strong>
                   <p>{typeRooms}</p>
                   <strong>Vagas disponíveis:</strong>
                   <p>{onRooms}</p>
                 </Hotel>
-              </Link>
+              </div>
             ))}
           </Container>
         </>
       )}
     </>
   );
-};
+}

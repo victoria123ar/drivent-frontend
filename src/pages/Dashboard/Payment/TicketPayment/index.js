@@ -6,7 +6,6 @@ import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import { createPaymentParams } from '../../../../services/paymentApi';
 
 const PaymentForm = ({ ticket }) => {
-  const [ticketStatus, setTicketStatus] = useState('RESERVE');
   const ticketPriceAjust = ticket.TicketType.price / 100;
   const token = useToken();
   const [number, setNumber] = useState('');
@@ -15,6 +14,7 @@ const PaymentForm = ({ ticket }) => {
   const [name, setName] = useState('');
   const [focus, setFocus] = useState('');
   const [issuer, setIssuer] = useState('');
+  const [userTicket, setUserTicket] = useState(ticket);
 
   const handleInputFocus = (e) => {
     setFocus(e.target.name);
@@ -98,7 +98,7 @@ const PaymentForm = ({ ticket }) => {
   }
 
   function PaymentRender() {
-    if (ticketStatus === 'PAID') return Paid();
+    if (userTicket.status === 'PAID') return Paid();
     return Reserve();
   }
   async function finalizePayment(e) {
@@ -113,12 +113,10 @@ const PaymentForm = ({ ticket }) => {
     const bodyRequest = { ticketId: ticket.id, cardData: cardData };
     try {
       await createPaymentParams(bodyRequest, token);
-      setTicketStatus('PAID');
+      setUserTicket({ ...userTicket, status: 'PAID' });
     } catch (error) {
       alert('Erro ao digitar os dados do cartão');
-      setTicketStatus('RESERVE');
     }
-    setTicketStatus('PAID');
   }
 
   return (

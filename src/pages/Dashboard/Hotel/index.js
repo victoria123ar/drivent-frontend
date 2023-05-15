@@ -5,26 +5,30 @@ import useToken from '../../../hooks/useToken';
 import { StyledTypography } from '../../../components/PersonalInformationForm';
 import { getTickets } from '../../../services/ticketApi';
 import { ListHotels } from './ListHotels';
+import { useParams } from 'react-router-dom';
 
 export default function Hotels() {
   const token = useToken();
+  const { idHotel } = useParams();
   const [remoteStatus, setRemoteStatus] = useState(false);
-  const [ticketStatus, setTicketStatus] = useState(false);
+  const [ticketStatus, setTicketStatus] = useState(true);
   const [ticket, setTicket] = useState();
 
   useEffect(() => {
-    const promise = getTickets(token);
-    promise
+    getTickets(token)
       .then((res) => {
-        setTicket(res.data);
+        const TicketType = res.TicketType;
 
         if (res.status === 'PAID') setTicketStatus(true);
-        if (res.TicketType.isRemote) setRemoteStatus(true);
+        if (TicketType.isRemote || TicketType.includesHotel) setRemoteStatus(true);
+        setTicket(res);
       })
       .catch((error) => {
         if (error.status === 404) setTicket(false);
       });
   }, []);
+
+  if (!ticket) return <>Carregando...</>;
 
   return (
     <>
@@ -42,9 +46,7 @@ export default function Hotels() {
           </Text>
         </Container>
       ) : (
-        <>
-          <ListHotels token={token} />
-        </>
+        <ListHotels idHotel={idHotel} token={token} />
       )}
     </>
   );
@@ -66,5 +68,5 @@ const Text = styled.div`
   font-size: 20px;
   text-align: center;
 
-  color: #8E8E8E;
+  color: #8e8e8e;
 `;
