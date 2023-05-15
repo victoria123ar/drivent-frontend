@@ -64,7 +64,11 @@ export default function Payment() {
           <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
           {!enrollment ? (
             <Container>
-              <Text>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</Text>
+              <Text>
+                Você precisa completar sua inscrição antes
+                <br />
+                de prosseguir pra escolha de ingresso
+              </Text>
             </Container>
           ) : (
             <>
@@ -78,7 +82,6 @@ export default function Payment() {
                 setForm={setForm}
                 ticketsType={ticketsType}
                 setTicketSelected={setTicketSelected}
-                setHotelTicketType={setHotelTicketType}
               />
               {!inPerson ? (
                 <></>
@@ -106,7 +109,6 @@ export default function Payment() {
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
 `;
 const Text = styled.span`
   font-family: 'Roboto';
@@ -115,5 +117,5 @@ const Text = styled.span`
   color: #8e8e8e;
   text-align: center;
   line-height: 23px;
-  margin-top: 40%;
+  margin-top: 25%;
 `;
