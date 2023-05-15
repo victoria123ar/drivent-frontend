@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import useToken from '../../../hooks/useToken';
 import { StyledTypography } from '../../../components/PersonalInformationForm';
-import { getTicket } from '../../../services/ticketApi';
+import { getTickets } from '../../../services/ticketApi';
 import { ListHotels } from './ListHotels';
 
 export default function Hotels() {
@@ -13,7 +13,7 @@ export default function Hotels() {
   const [ticket, setTicket] = useState();
 
   useEffect(() => {
-    const promise = getTicket(token);
+    const promise = getTickets(token);
     promise
       .then((res) => {
         setTicket(res.data);
@@ -55,7 +55,6 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: red;
 `;
 
 const Text = styled.div`
