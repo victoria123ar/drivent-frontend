@@ -1,9 +1,11 @@
-const Container = styled.div`
+import styled from 'styled-components';
+
+export const Container = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const Text = styled.span`
+export const Text = styled.span`
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;

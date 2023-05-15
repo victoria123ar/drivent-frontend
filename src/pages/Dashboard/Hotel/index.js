@@ -17,15 +17,14 @@ export default function Hotels() {
     promise
       .then((res) => {
         setTicket(res.data);
+
+        if (res.status === 'PAID') setTicketStatus(true);
+        if (res.TicketType.isRemote) setRemoteStatus(true);
       })
       .catch((error) => {
         if (error.status === 404) setTicket(false);
       });
   }, []);
-
-  if (ticket.status === 'PAID') setTicketStatus(true);
-
-  if(ticket.TicketType.isRemote) setRemoteStatus(true);
 
   return (
     <>
@@ -36,13 +35,15 @@ export default function Hotels() {
         </Container>
       ) : !remoteStatus ? (
         <Container>
-          <Text>Sua modalidade de ingresso não inclui hospedagem.<br/>Prossiga para a escolha de atividades.</Text>
+          <Text>
+            Sua modalidade de ingresso não inclui hospedagem.
+            <br />
+            Prossiga para a escolha de atividades.
+          </Text>
         </Container>
-      ):(
+      ) : (
         <>
-          <ListHotels
-          token={token}
-          />
+          <ListHotels token={token} />
         </>
       )}
     </>
@@ -50,6 +51,7 @@ export default function Hotels() {
 }
 
 const Container = styled.div`
+  height: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -60,4 +62,10 @@ const Text = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  font-family: 'Roboto';
+  font-size: 20px;
+  text-align: center;
+
+  color: #8E8E8E;
 `;
