@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { getHotelsWithRooms } from '../../../../services/hotelApi';
 import { Container, Room, Capacity, Text } from './style';
+import { FaUser } from 'react-icons/fa';
 
 export function ListRooms({ token, hotel }) {
   const [rooms, setRooms] = useState();
@@ -20,9 +21,11 @@ export function ListRooms({ token, hotel }) {
   if (!rooms) return <>Carregando...</>;
 
   function capacity(qtd) {
+    const capacityUser = [];
     for (let i = 0; i < qtd; i++) {
-      return <ion-icon name="person"></ion-icon>;
+      capacityUser.push(<FaUser name="person" />);
     }
+    return capacityUser;
   }
 
   return (
@@ -32,7 +35,7 @@ export function ListRooms({ token, hotel }) {
         {rooms.map((r) => (
           <Room key={r.id}>
             <p>{r.id}</p>
-            <Capacity>{capacity(r.capacity)}</Capacity>
+            <Capacity>{capacity(r.capacity).map((r) => r)}</Capacity>
           </Room>
         ))}
       </Container>

@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  box-sizing: border-box;
   height: 90%;
   display: flex;
   flex-wrap: wrap;
-  padding: 0 35px;
+  padding: 0.25rem;
 `;
 
 export const Text = styled.div`
@@ -21,6 +22,7 @@ export const Text = styled.div`
 
 export const Room = styled.div`
   box-sizing: border-box;
+  padding: 0.55rem;
   width: 190px;
   height: 45px;
   display: flex;
@@ -37,4 +39,8 @@ export const Room = styled.div`
   }
 `;
 
-export const Capacity = styled.div``;
+export const Capacity = styled.div`
+  font-size: 20px;
+  display: flex;
+  gap: 0.1rem;
+`;
