@@ -59,7 +59,8 @@ export default function Payment() {
   async function reservation() {
     const bodyRequest = { ticketTypeId: ticketSelected.id };
     try {
-      await createTicket(bodyRequest, token);
+      const newTicket = await createTicket(bodyRequest, token);
+      setUserTickets(newTicket);
       setReserved(true);
     } catch (error) {
       alert('Erro ao reservar ticket');
