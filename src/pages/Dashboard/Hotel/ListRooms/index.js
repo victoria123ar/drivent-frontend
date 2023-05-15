@@ -1,21 +1,23 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { getHotelsWithRooms } from '../../../../services/hotelApi';
-import { Container, Room, Capacity } from './style';
+import { Container, Room, Capacity, Text } from './style';
 
-export async function ListRooms(token, idHotel) {
+export function ListRooms({ token, hotel }) {
   const [rooms, setRooms] = useState();
 
   useEffect(() => {
-    const promise = getHotelsWithRooms(token, idHotel);
+    const promise = getHotelsWithRooms(token, hotel.id);
     promise
       .then((res) => {
-        setRooms(res.data);
+        setRooms(res.Rooms);
       })
       .catch((error) => {
         if (error.status === 404) setRooms(false);
       });
   }, []);
+
+  if (!rooms) return <>Carregando...</>;
 
   function capacity(qtd) {
     for (let i = 0; i < qtd; i++) {
@@ -36,4 +38,4 @@ export async function ListRooms(token, idHotel) {
       </Container>
     </>
   );
-};
+}
