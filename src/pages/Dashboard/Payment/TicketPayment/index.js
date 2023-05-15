@@ -3,21 +3,27 @@ import { PaymentContent, TicketContent, PaymentConfirme, ConfirmeIcon, CardConte
 import useToken from '../../../../hooks/useToken';
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
+import { createPaymentParams } from '../../../../services/paymentApi';
 
 const PaymentForm = ({ ticket }) => {
   const [ticketStatus, setTicketStatus] = useState('RESERVE');
-  const ticketPrice = ticket.TicketType.price;
+  const ticketPriceAjust = ticket.TicketType.price / 100;
   const token = useToken();
   const [number, setNumber] = useState('');
   const [expiry, setExpity] = useState('');
   const [cvc, setCvc] = useState('');
   const [name, setName] = useState('');
   const [focus, setFocus] = useState('');
-  const handleInputFocus = (evt) => {
-    setFocus(evt.target.name);
+  const [issuer, setIssuer] = useState('');
+
+  const handleInputFocus = (e) => {
+    setFocus(e.target.name);
   };
-  console.log('Jorge');
-  console.log(ticket);
+
+  const handleCardTypeChange = (cardType) => {
+    setIssuer(cardType.issuer);
+  };
+
   function Paid() {
     return (
       <>
@@ -36,7 +42,14 @@ const PaymentForm = ({ ticket }) => {
     return (
       <>
         <CardContent>
-          <Cards number={number} expiry={expiry} cvc={cvc} name={name} focused={focus} />
+          <Cards
+            cvc={cvc}
+            expiry={expiry}
+            focused={focus}
+            name={name}
+            number={number}
+            callback={handleCardTypeChange}
+          />
           <form>
             <input
               type="number"
@@ -55,8 +68,6 @@ const PaymentForm = ({ ticket }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               onFocus={handleInputFocus}
-              maxLength={16}
-              required
             />
             <input
               type="number"
@@ -66,9 +77,7 @@ const PaymentForm = ({ ticket }) => {
               onChange={(e) => setExpity(e.target.value)}
               onFocus={handleInputFocus}
               className="validThru"
-              maxLength={4}
-              minLength={4}
-              required
+              mask="99/99"
             />
             <input
               type="number"
@@ -78,9 +87,6 @@ const PaymentForm = ({ ticket }) => {
               onChange={(e) => setCvc(e.target.value)}
               onFocus={handleInputFocus}
               className="cvc"
-              maxLength={3}
-              minLength={3}
-              required
             />
           </form>
         </CardContent>
@@ -95,8 +101,23 @@ const PaymentForm = ({ ticket }) => {
     if (ticketStatus === 'PAID') return Paid();
     return Reserve();
   }
-
-  function finalizePayment(e) {
+  async function finalizePayment(e) {
+    e.preventDefault();
+    const cardData = {
+      issuer: issuer,
+      number: number,
+      name: name,
+      expirationDate: expiry,
+      cvv: cvc,
+    };
+    const bodyRequest = { ticketId: ticket.id, cardData: cardData };
+    try {
+      await createPaymentParams(bodyRequest, token);
+      setTicketStatus('PAID');
+    } catch (error) {
+      alert('Erro ao digitar os dados do cartão');
+      setTicketStatus('RESERVE');
+    }
     setTicketStatus('PAID');
   }
 
@@ -107,7 +128,7 @@ const PaymentForm = ({ ticket }) => {
         <h2>Ingresso Escolhido</h2>
         <TicketContent>
           <h3>{ticket.TicketType.name}</h3>
-          <h4>+ {ticketPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h4>
+          <h4>+ {ticketPriceAjust.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h4>
         </TicketContent>
         <h2>Pagamento</h2>
         <PaymentRender />
