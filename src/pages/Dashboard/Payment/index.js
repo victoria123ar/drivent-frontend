@@ -20,14 +20,26 @@ export default function Payment() {
   const [hotelTicketType, setHotelTicketType] = useState({ selected: false, includesHotel: null });
   const [ticket, setTicket] = useState({});
   const [reserved, setReserved] = useState(false);
+  const [userTickets, setUserTickets] = useState();
   const { enrollment } = useEnrollment();
 
   useEffect(() => {
-    const promise = getTicketsType(token);
-    promise
-  const [ticketSelected, setTicketSelected] = useState({});
-  const [reserved, setReserved] = useState(false);
-  const [userTickets, setUserTickets] = useState();
+    getTicketsType(token)
+      .then((res) => {
+        setTicketsType(res);
+      })
+      .catch((error) => {
+        if (error.status === 404) setTicketsType([]);
+      });
+    getTickets(token)
+      .then((res) => {
+        setUserTickets(res);
+      })
+      .catch((error) => {
+        if (error.status === 404) setUserTickets();
+      });
+  }, []);
+
 
   async function reservation() {
     const bodyRequest = { ticketTypeId: ticketSelected.id };
@@ -51,24 +63,22 @@ export default function Payment() {
       ) : (
         <>
           <StyledTypography variant="h4"> Ingresso e pagamento</StyledTypography>
-          {!infos ? (
+          {!enrollment ? (
             <Container>
               <Text>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</Text>
             </Container>
           ) : (
             <>
               <TicketType
-                active={active}
-                setActive={setActive}
-                setInPerson={setInPerson}
-                selected={selected}
-                setSelected={setSelected}
-                form={form}
-                setForm={setForm}
-                event={event}
-                ticketsType={ticketsType}
-                setTicketSelected={setTicketSelected}
-                setHotelTicketType={setHotelTicketType}
+            active={active}
+            setActive={setActive}
+            setInPerson={setInPerson}
+            selected={selected}
+            setSelected={setSelected}
+            form={form}
+            setForm={setForm}
+            ticketsType={ticketsType}
+            setTicket={setTicket}
               />
               {!inPerson ? (
                 <></>
